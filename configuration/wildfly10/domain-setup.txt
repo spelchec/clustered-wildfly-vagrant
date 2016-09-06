@@ -1,0 +1,7 @@
+MASTER http://172.28.128.27/
+
+/opt/wildfly/domain/configuration/
+sudo mv host.xml host.xml.orig
+sudo cp host-master.xml host.xml
+
+sudo /opt/wildfly/bin/add-user.sh --realm ManagementRealm --user MyAdminUser --password '1234!@#$REwq'

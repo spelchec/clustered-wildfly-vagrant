@@ -1,0 +1,12 @@
+sudo yum -y install maven
+sudo yum -y install git
+cd ~
+mkdir git
+cd git
+git clone git://github.com/liweinan/cluster-demo.git
+
+cd cluster-demo
+mvn package
+
+cd target
+sudo mv cluster-demo.war /opt/jboss/httpd/htdocs/htdocs/

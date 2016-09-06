@@ -1,0 +1,96 @@
+# Taken from YouTube video
+# https://www.youtube.com/watch?v=xa_gtRDpwyQ
+# Developer Interview (#DI 11) - Stuart Douglas (@stuartwdouglas) about WildFly9 and Undertow
+
+# Starts in domain mode; clustering needs a real address, not localhost
+./domain.sh -Djboss.bind.address=192.168.1.4
+
+# Domain mode through Undertow's CLI
+./jboss-cli.sh -c
+
+# cleanup
+:stop-servers(blocking=true)
+/host=master/server-config=server-one:remove
+/host=master/server-config=server-two:remove
+/host=master/server-config=server-three:remove
+/server-group=main-server-group:remove
+/server-group=other-server-group:remove
+
+# Add the IP address 192.168.1.4 to the host aliases
+/profile=ha/subsystem=undertow/server=default-server/host=default-host:write-attribute(name=alias, value=[192.168.1.4])
+
+# Add backend server group
+/server-group=backend-servers:add(profile=ha, socket-binding=ha-sockets)
+
+# Add backend servers
+/host=master/server-config=backend1:add(group=backend-servers, socket-binding-port-offset=100)
+/host=master/server-config=backend2:add(group=backend-servers, socket-binding-port-offset=200)
+
+#start the backend servers
+/server-group=backend-servers:start-servers
+
+# add system properties
+/host=master/server-config=backend1/system-property=server.name:add(boot-time=false, value=backend1)
+/host=master/server-config=backend2/system-property=server.name:add(boot-time=false, value=backend2)
+
+deploy ~clustering-demo.war --server-groups=backend-servers
+
+/profile=default/subsystem=undertow/configuration=fiter/mod-cluster=modcluster:add(management-socket-binding=http, advertise-socket-binding=modcluster)
+/socket-binding-group=standard-sockets/socket-binding=modcluster:add(port=23364, multicast-address=224.0.1.105)
+/profile=default/subsystem=undertow/server=default-server/host=default-host/filter-ref=modcluster:add
+
+/server-group=load-balancer:add(profile=default, socket-binding-group=standard-sockets)
+/host=master/server-config=load-balancer:add(group=load-balancer)
+/server-group=load-balancer:start-servers
+
+# AJP matters here.
+
+# Add another server
+/host=master/server-config=backend3:add(group=backend-servers, socket-binding-port-offset=300)
+:start-servers
+/host=master/server-config=backend3/system-property=server.name:add(boot-time=false, value=backend3)
+
+#remove one
+/host=master/server=backend1:stop
+
+
+======= clustering-demo
+
+------- SimpleServlet.java
+package io.undertow.clusteringdemo;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
+/**
+ * @author Stuart Douglas
+ */
+ 
+@WebServlet(urlPatterns = "")
+public class SimpleServlet extends HttpServlet {
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.getWriter().write("Server " + System.getPropert("server.name") + " ");
+		if (req.getParameter("stateful") != null) {
+			HttpSession session = req.getSession(true);
+			Integer count = (Integer) session.getAttribute("count");
+			if (count == null) {
+				count = 1;
+			}
+			resp.getWriter().write("Request Count " + count);
+			session.setAttribute("count", ++count);
+		}
+	}
+}
+
+----------- web.xml
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+		verison="3.0">
+	<distributable />
+</web-app>

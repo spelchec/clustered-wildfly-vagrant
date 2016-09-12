@@ -15,9 +15,9 @@ vagrant up
 ```
 	
 After a while, you should have three VMs running:
-* `172.28.128.88` - Wildfly domain controller with Apache and mod_cluster
-* `172.28.128.90` - Wildfly slave 1
-* `172.28.128.91` - Wildfly slave 2
+* `172.28.128.88` - `mod-cluster10` -- Wildfly domain controller with Apache and mod_cluster
+* `172.28.128.90` - `wildfly10-slave1` -- Wildfly slave 1
+* `172.28.128.91` - `wildfly10-slave2` -- Wildfly slave 2
 
 ```
 Username		|		Password

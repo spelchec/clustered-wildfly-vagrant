@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 
-<host name="slave" xmlns="urn:jboss:domain:4.2">
+<host name="slave2" xmlns="urn:jboss:domain:4.2">
     <extensions>
         <extension module="org.jboss.as.jmx"/>
     </extensions>
@@ -85,8 +85,8 @@
         </jvm>
     </jvms>
     <servers>
-        <server name="server-one" group="main-server-group" auto-start="true" />
-        <server name="server-two" group="other-server-group" auto-start="true" >
+        <server name="server2-one" group="main-server-group" auto-start="false" />
+        <server name="server2-two" group="other-server-group" auto-start="false" >
             <!--
               ~  server-two avoids port conflicts by incrementing the ports in
               ~                  the default socket-group declared in the server-group 

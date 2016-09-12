@@ -37,6 +37,8 @@ sudo adduser wildfly
 sudo chown -R wildfly:wildfly /opt/wildfly-${WF_VER}.Final
 sudo chown -R wildfly:wildfly /opt/wildfly
 sudo chown -R wildfly:wildfly /var/log/wildfly
+sudo chown -R wildfly:wildfly /var/run/wildfly
+sudo chmod -R 777 /var/run/wildfly
 
 sudo /opt/wildfly/bin/add-user.sh --realm ManagementRealm --user  MyAdminUser --group "" --password '1234!@#$REwq' --enable
 # Secret value is MTIzNCFAIyRSRXdx

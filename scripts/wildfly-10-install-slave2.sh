@@ -25,8 +25,8 @@ sudo chmod 777 getip.sh
 dos2unix getip.sh getip.sh
 
 sudo cp /vagrant/scripts/start-wildfly-10-slave2.sh start-wildfly-10-slave.sh
-sudo chmod 777 start-wildfly-slave.sh
-dos2unix start-wildfly-slave.sh start-wildfly-slave.sh
+sudo chmod 777 start-wildfly-10-slave.sh
+dos2unix start-wildfly-10-slave.sh start-wildfly-10-slave.sh
 
 sudo cp /vagrant/scripts/disable-selinux.sh disable-selinux.sh
 sudo chmod 777 disable-selinux.sh

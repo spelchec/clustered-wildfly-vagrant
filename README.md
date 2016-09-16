@@ -35,7 +35,7 @@ This was created because the JBoss/Wildfly instructions, albeit useful, weren't 
 This project was set up on Windows 8 & 10, and uses Hashicorp Vagrant for machine provisioning.
 
 * [Hashicorp Vagrant](https://www.vagrantup.com/)
- * [with CentOS 7 box v1607.01](https://atlas.hashicorp.com/centos/boxes/7/)
+ * [with CentOS 7 box v1608.02](https://atlas.hashicorp.com/centos/boxes/7/)
 
 Installers
 

@@ -1,6 +1,7 @@
 sudo yum -y install java
 sudo yum -y install dos2unix
 sudo yum -y install nmap
+sudo yum -y install zip
 sudo yum -y install selinux-policy-devel
 
 sudo chmod 777 /etc/hosts
@@ -9,6 +10,10 @@ sudo echo "172.28.128.90      slave1" >> /etc/hosts
 sudo echo "172.28.128.91      slave2" >> /etc/hosts
 sudo chmod 644 /etc/hosts
 
+cd /vagrant/deployments/
+zip -r portal.zip portal
+cd ~
+mv /vagrant/deployments/portal.zip .
 
 MC_VER=1.3.1
 WF_VER=10.1.0
